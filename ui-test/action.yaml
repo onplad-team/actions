@@ -1,0 +1,31 @@
+name: 'UI Testing'
+description: 'Installs dependencies, runs test, and builds the project'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: true
+    default: '18.12.0'
+    
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install dependencies
+      run: yarn
+      shell: bash
+
+    - name: Test with Jest (linting)
+      run: yarn lint
+      shell: bash
+
+    - name: Build
+      run: yarn build
+      shell: bash
