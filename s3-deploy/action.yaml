@@ -49,7 +49,12 @@ runs:
         aws s3 cp \
           --recursive \
           --region ${{ inputs.aws_bucket_region }} \
-          dist s3://${{ inputs.aws_bucket }} && \
-        aws cloudfront create-invalidation \
-          --distribution-id ${{ inputs.aws_distribution_id }} \
-          --paths "/*"
+          dist s3://${{ inputs.aws_bucket }}
+
+    - name: Invalidate the cache
+      shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+      run: |
+           aws cloudfront create-invalidation --distribution-id ${{ inputs.aws_distribution_id }} --paths "/*"        
