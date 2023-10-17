@@ -10,13 +10,13 @@ inputs:
   aws_secret_access_key:
     description: 'AWS Secret Access Key'
     required: true
-  dev_bucket_region:
+  aws_bucket_region:
     description: 'AWS Region of the S3 Bucket'
     required: true
-  dev_bucket:
+  aws_bucket:
     description: 'Name of the S3 Bucket'
     required: true
-  distribution_id:
+  aws_distribution_id:
     description: 'CloudFront Distribution ID'
     required: true
 runs:
@@ -38,8 +38,8 @@ runs:
       run: |
         aws s3 cp \
           --recursive \
-          --region ${{ inputs.dev_bucket_region }} \
-          dist s3://${{ inputs.dev_bucket }} && \
+          --region ${{ inputs.aws_bucket_region }} \
+          dist s3://${{ inputs.aws_bucket }} && \
         aws cloudfront create-invalidation \
-          --distribution-id ${{ inputs.distribution_id }} \
+          --distribution-id ${{ inputs.aws_distribution_id }} \
           --paths "/*"
