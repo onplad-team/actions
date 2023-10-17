@@ -56,5 +56,6 @@ runs:
       env:
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_bucket_region }}
       run: |
            aws cloudfront create-invalidation --distribution-id ${{ inputs.aws_distribution_id }} --paths "/*" > ok.json     
