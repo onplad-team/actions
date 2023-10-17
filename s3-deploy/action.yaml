@@ -33,6 +33,13 @@ runs:
       run: yarn build
       shell: bash
 
+    - name: Debug variables
+      run: |
+        echo "DEV_BUCKET_REGION: ${{ inputs.aws_bucket_region }}"
+        echo "DEV_BUCKET: ${{ inputs.aws_bucket }}"
+        echo "DISTRIBUTION:${{ inputs.aws_distribution_id }}"
+      shell: bash
+      
     - name: Deploy to S3
       shell: bash
       env:
