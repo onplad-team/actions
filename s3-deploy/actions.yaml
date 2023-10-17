@@ -1,1 +1,45 @@
+name: 'S3 Deploy Action'
+description: 'Builds and deploys a project to AWS S3 and invalidates a CloudFront distribution cache'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  aws_access_key_id:
+    description: 'AWS Access Key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS Secret Access Key'
+    required: true
+  dev_bucket_region:
+    description: 'AWS Region of the S3 Bucket'
+    required: true
+  dev_bucket:
+    description: 'Name of the S3 Bucket'
+    required: true
+  distribution_id:
+    description: 'CloudFront Distribution ID'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build Source
+      run: yarn build
+
+    - name: Deploy to S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+      run: |
+        aws s3 cp \
+          --recursive \
+          --region ${{ inputs.dev_bucket_region }} \
+          dist s3://${{ inputs.dev_bucket }} && \
+        aws cloudfront create-invalidation \
+          --distribution-id ${{ inputs.distribution_id }} \
+          --paths "/*"
